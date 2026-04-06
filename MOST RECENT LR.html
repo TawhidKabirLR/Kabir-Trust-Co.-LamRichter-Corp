@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lam Richter Corp.</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<link rel="apple-touch-icon" href="favicon.svg"/>
+<meta name="theme-color" content="#0a5c6e"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Syncopate:wght@400;700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;cursor:none!important}
+:root{
+  --bg:#fff;--bg2:#f4f7fb;--border:#d0dcea;
+  --teal:#0a5c6e;--teal-dark:#074554;--teal-light:#1a8a9e;--teal-pale:#e6f5f7;
+  --text:#0d1f3c;--muted:#5a6e8a;--muted2:#8fa3bc;
+  --fd:'Playfair Display',serif;--fs:'Jost',sans-serif;--fh:'Syncopate',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--fs);font-weight:300;overflow-x:hidden}
+#cur{position:fixed;width:10px;height:10px;background:var(--teal);border-radius:50%;pointer-events:none;z-index:2147483647;transform:translate(-50%,-50%);transition:width .2s,height .2s;will-change:left,top;left:-100px;top:-100px}
+#cur-ring{position:fixed;width:34px;height:34px;border:1.5px solid var(--teal);border-radius:50%;pointer-events:none;z-index:2147483646;transform:translate(-50%,-50%);opacity:.4;will-change:left,top;left:-100px;top:-100px}
+#corner-logo{position:fixed;top:16px;right:16px;z-index:998;width:36px;height:36px;background:#0046ad;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.15);transition:transform .2s}
+#corner-logo:hover{transform:scale(1.08)}
+#corner-logo svg{width:24px;height:24px}
+#splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease}
+#splash.gone{opacity:0;pointer-events:none}
+#splash-inner{display:flex;flex-direction:column;align-items:center;gap:24px}
+#splash-logo{display:flex;align-items:center}
+#splash-k{font-family:'Playfair Display',serif;font-size:72px;font-weight:400;font-style:italic;color:#0a5c6e;line-height:1;animation:splashIn .6s ease .2s both}
+#splash-div{width:1px;height:60px;background:linear-gradient(to bottom,transparent,#d0dcea,transparent);margin:0 20px;animation:splashIn .6s ease .4s both}
+#splash-l{font-family:'Playfair Display',serif;font-size:72px;font-weight:400;font-style:italic;color:#0a5c6e;line-height:1;animation:splashIn .6s ease .6s both}
+#splash-name{font-family:'Syncopate',sans-serif;font-size:11px;letter-spacing:4px;color:#0a5c6e;text-transform:uppercase;animation:splashIn .6s ease .8s both}
+#splash-tag{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#8fa3bc;animation:splashIn .6s ease 1s both}
+.page{display:none}.page.active{display:block;opacity:1}
+.page.fade-in{animation:pgIn .5s ease forwards}
+#overlay{position:fixed;inset:0;z-index:9999;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0}
+#overlay.show{pointer-events:all;animation:olIn .5s ease forwards}
+#overlay.hide{animation:olOut .5s ease .3s forwards}
+#overlay-inner{font-family:var(--fd);font-size:clamp(32px,6vw,80px);font-weight:400;color:#fff;opacity:0;transform:scale(.9);transition:opacity .3s ease .15s,transform .3s ease .15s;font-style:italic}
+#overlay.show #overlay-inner{opacity:1;transform:scale(1)}
+@keyframes olIn{from{opacity:0}to{opacity:1}}
+@keyframes olOut{from{opacity:1}to{opacity:0}}
+.snav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:20px 60px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.96);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+.snav.scrolled{border-color:var(--border);box-shadow:0 2px 20px rgba(0,0,0,.06)}
+.nav-logo-main{font-family:var(--fh);font-size:11px;letter-spacing:3px;display:block;color:var(--teal)}
+.nav-logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);display:block;margin-top:3px}
+.nav-links{display:flex;gap:28px;list-style:none;align-items:center}
+.nav-links a{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+.nav-pill{font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border:1px solid var(--teal);color:var(--teal);background:transparent;font-family:var(--fs);font-weight:400;transition:all .2s}
+.nav-pill:hover{background:var(--teal);color:#fff}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px}
+.nav-hamburger span{display:block;width:22px;height:1.5px;background:var(--teal);transition:all .3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;inset:0;z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:36px;opacity:0;pointer-events:none;transition:opacity .3s;background:var(--teal-dark)}
+.mobile-menu.open{opacity:1;pointer-events:all}
+.mobile-menu a,.mob-link{font-family:var(--fd);font-size:clamp(28px,6vw,48px);font-weight:400;font-style:italic;color:#fff;text-decoration:none;opacity:.7;transition:opacity .2s;background:none;border:none}
+.mobile-menu a:hover,.mob-link:hover{opacity:1}
+.mob-small{font-family:var(--fs)!important;font-size:11px!important;letter-spacing:3px;text-transform:uppercase;font-style:normal!important;opacity:.4!important;margin-top:20px;border-top:1px solid rgba(255,255,255,.15);padding-top:20px;width:220px;text-align:center}
+.hero{display:flex;flex-direction:column;justify-content:flex-start;padding:90px 60px 80px;position:relative;overflow:hidden}
+.hgl-v{position:absolute;top:0;bottom:0;left:50%;width:1px;background:linear-gradient(to bottom,transparent,var(--border) 20%,var(--border) 80%,transparent)}
+.hgl-h{position:absolute;left:0;right:0;top:60%;height:1px;background:linear-gradient(to right,transparent,var(--border) 20%,var(--border) 80%,transparent)}
+.hero-letter{position:absolute;top:50%;right:-20px;transform:translateY(-60%);font-family:var(--fd);font-size:36vw;font-weight:400;line-height:1;pointer-events:none;user-select:none;letter-spacing:-12px;color:#d5edf1}
+.hero-ey{font-size:10px;letter-spacing:5px;text-transform:uppercase;margin-bottom:30px;color:var(--teal)}
+.hero-title{font-family:var(--fd);font-size:clamp(50px,8vw,112px);font-weight:400;line-height:1.05;color:var(--text);letter-spacing:-1px;max-width:780px}
+.hero-title em{font-style:italic;color:var(--teal)}
+.hero-rule{width:56px;height:3px;margin:36px 0;background:var(--teal)}
+.hero-sub{max-width:460px;font-size:13px;line-height:2;color:var(--muted)}
+.hero-btns{display:flex;gap:14px;margin-top:48px}
+.btn-s{font-family:var(--fs);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:15px 38px;color:#fff;border:none;font-weight:400;transition:opacity .2s;text-decoration:none;display:inline-block;background:var(--teal)}
+.btn-s:hover{opacity:.85}
+.btn-g{font-family:var(--fs);font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:15px 38px;background:transparent;border:1px solid var(--teal);color:var(--teal);font-weight:400;transition:background .2s;text-decoration:none;display:inline-block}
+.btn-g:hover{background:var(--teal-pale)}
+.mq{overflow:hidden;padding:13px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--teal)}
+.mq-track{display:flex;gap:60px;animation:scroll 28s linear infinite;white-space:nowrap}
+.mq-track span{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.55);flex-shrink:0}
+.mq-track .dot{color:rgba(255,255,255,.2)}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;padding:110px 60px;border-top:1px solid var(--border)}
+.sec-lbl{font-size:9px;letter-spacing:5px;text-transform:uppercase;margin-bottom:18px;display:block;color:var(--teal)}
+.sec-title{font-family:var(--fd);font-size:clamp(34px,5vw,68px);font-weight:400;line-height:1.1;color:var(--text)}
+.sec-title em{font-style:italic;color:var(--teal)}
+.about-body{font-size:13px;line-height:2;color:var(--muted);margin-top:36px}
+.about-body+.about-body{margin-top:16px}
+.about-cards{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.ac{background:#fff;padding:32px 28px;position:relative;transition:background .3s}
+.ac::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;transform:scaleY(0);transform-origin:bottom;transition:transform .3s;background:var(--teal)}
+.ac:hover::before{transform:scaleY(1)}
+.ac:hover{background:var(--teal-pale)}
+.ac-lbl{font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;display:block;color:var(--teal-light)}
+.ac-title{font-family:var(--fd);font-size:24px;font-weight:400;color:var(--text);margin-bottom:8px}
+.ac-desc{font-size:12px;line-height:1.8;color:var(--muted)}
+.wws{padding:110px 60px;background:var(--bg);border-top:1px solid var(--border)}
+.wws-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:60px}
+.wws-card{background:#fff;padding:44px 36px;transition:background .3s}
+.wws-card:hover{background:var(--teal-pale)}
+.wws-icon{font-family:var(--fd);font-size:48px;font-weight:400;line-height:1;margin-bottom:20px;color:var(--teal-pale)}
+.wws-title{font-family:var(--fd);font-size:22px;font-weight:400;color:var(--text);margin-bottom:12px}
+.wws-desc{font-size:12px;line-height:1.9;color:var(--muted)}
+.wws-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.wws-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border:1px solid var(--teal-pale);color:var(--teal-light)}
+.services{padding:110px 60px;background:var(--bg2);border-top:1px solid var(--border)}
+.svc-hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:72px}
+.svc-intro{max-width:340px;font-size:12px;line-height:1.9;color:var(--muted);margin-top:20px}
+.svc-grid{display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.svc-card{background:#fff;padding:48px 36px;position:relative;transition:background .3s}
+.svc-card:hover{background:var(--teal-pale)}
+.svc-num{font-family:var(--fd);font-size:56px;font-weight:300;color:transparent;-webkit-text-stroke:1px var(--border);line-height:1;margin-bottom:28px;transition:all .3s}
+.svc-card:hover .svc-num{-webkit-text-stroke:1px var(--teal);opacity:.2}
+.svc-title{font-family:var(--fd);font-size:26px;font-weight:400;color:var(--text);margin-bottom:14px;line-height:1.2}
+.svc-desc{font-size:12px;line-height:1.9;color:var(--muted)}
+.svc-arr{position:absolute;bottom:28px;right:28px;font-size:18px;opacity:0;transform:translateX(-6px);transition:all .3s;color:var(--teal)}
+.svc-card:hover .svc-arr{opacity:1;transform:translateX(0)}
+.insights{padding:110px 60px;background:var(--bg);border-top:1px solid var(--border)}
+.ins-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:60px}
+.ins-card{background:#fff;padding:44px 36px;display:flex;flex-direction:column;transition:background .3s}
+.ins-card:hover{background:var(--teal-pale)}
+.ins-date{font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:block;color:var(--teal-light)}
+.ins-title{font-family:var(--fd);font-size:22px;font-weight:400;color:var(--text);margin-bottom:14px;line-height:1.3;flex:1}
+.ins-excerpt{font-size:12px;line-height:1.9;color:var(--muted);margin-bottom:24px}
+.ins-read{font-size:9px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:gap .2s;color:var(--teal)}
+.ins-card:hover .ins-read{gap:14px}
+.contact{padding:110px 60px;display:grid;grid-template-columns:1fr 1fr;gap:100px;background:var(--bg2);border-top:1px solid var(--border)}
+.ct-body{font-size:13px;line-height:2;color:var(--muted);margin-top:28px;max-width:380px}
+.ct-info{margin-top:44px;display:flex;flex-direction:column;gap:28px}
+.ct-person{border-left:2px solid var(--teal);padding-left:18px}
+.ct-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:5px;color:var(--teal-light)}
+.ct-val{font-family:var(--fd);font-size:17px;font-weight:400;color:var(--text);line-height:1.5;display:block}
+.ct-sub{font-size:11px;color:var(--muted);letter-spacing:1px;display:block;margin-top:3px}
+.ct-reach{margin-top:36px;padding:28px 32px;background:var(--teal-dark);border-left:3px solid var(--teal-light)}
+.ct-reach p{font-size:13px;line-height:1.9;color:rgba(255,255,255,.75)}
+.ct-reach strong{color:#fff;font-weight:400;font-family:var(--fd);font-style:italic;font-size:15px}
+.sfoot{padding:44px 60px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:28px;background:var(--teal-dark)}
+.ft-name{font-family:var(--fh);font-size:10px;letter-spacing:2px;color:#fff;display:block}
+.ft-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:3px;display:block}
+.ft-copy{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.35);text-align:center;line-height:1.8}
+.ft-links{display:flex;justify-content:flex-end;gap:28px}
+.ft-links a{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s}
+.ft-links a:hover{color:#fff}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* LOGIN */
+#pg-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--teal-dark);position:relative;overflow:hidden}
+.login-bg{position:absolute;font-family:var(--fd);font-size:50vw;font-weight:400;font-style:italic;color:rgba(255,255,255,.03);pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%)}
+.login-box{background:#fff;padding:60px 56px;width:100%;max-width:460px;position:relative;z-index:2}
+.login-logo{font-family:var(--fh);font-size:10px;letter-spacing:3px;color:var(--teal);display:block;margin-bottom:8px}
+.login-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);display:block;margin-bottom:44px}
+.login-title{font-family:var(--fd);font-size:36px;font-weight:400;color:var(--text);margin-bottom:8px;line-height:1.2}
+.login-title em{font-style:italic;color:var(--teal)}
+.login-toggle{display:flex;gap:0;margin-bottom:36px;border:1px solid var(--border)}
+.login-toggle button{flex:1;padding:10px;font-family:var(--fs);font-size:10px;letter-spacing:2px;text-transform:uppercase;background:none;border:none;color:var(--muted);transition:all .2s}
+.login-toggle button.active{background:var(--teal);color:#fff}
+.login-field{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.login-field label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.login-field input{border:1px solid var(--border);padding:13px 16px;font-family:var(--fs);font-size:13px;color:var(--text);outline:none;transition:border-color .2s;background:#fff}
+.login-field input:focus{border-color:var(--teal)}
+.login-btn{width:100%;background:var(--teal);color:#fff;border:none;padding:16px;font-family:var(--fs);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-top:8px;transition:opacity .2s}
+.login-btn:hover{opacity:.85}
+.login-err{font-size:11px;color:#c0392b;margin-top:12px;display:none;letter-spacing:.5px;line-height:1.6}
+.login-ok{font-size:11px;color:var(--teal);margin-top:12px;display:none;letter-spacing:.5px;line-height:1.6}
+.login-hint{font-size:10px;color:var(--muted2);margin-top:16px;line-height:1.7;text-align:center}
+.login-hint a{color:var(--teal);text-decoration:none}
+.login-back{background:none;border:none;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:24px;padding-top:20px;border-top:1px solid var(--border);width:100%;transition:color .2s}
+.login-back:hover{color:var(--teal)}
+
+/* PORTAL */
+#pg-portal{min-height:100vh;background:var(--bg2)}
+.portal-nav{background:var(--teal-dark);padding:0 48px;display:flex;justify-content:space-between;align-items:center;height:56px}
+.portal-nav-logo{font-family:var(--fh);font-size:10px;letter-spacing:3px;color:#fff}
+.portal-user{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.portal-logout{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);background:none;border:1px solid rgba(255,255,255,.2);padding:6px 14px;transition:all .2s;margin-left:16px}
+.portal-logout:hover{color:#fff;border-color:rgba(255,255,255,.5)}
+.portal-body{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px)}
+.portal-sidebar{background:#fff;border-right:1px solid var(--border);padding:28px 0}
+.portal-sidebar-title{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--muted2);padding:0 20px;margin-bottom:12px;display:block;margin-top:8px}
+.pni{display:block;padding:10px 20px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);transition:all .2s;border:none;background:none;width:100%;text-align:left;border-left:3px solid transparent}
+.pni:hover{color:var(--teal);background:var(--teal-pale)}
+.pni.active{color:var(--teal);background:var(--teal-pale);border-left-color:var(--teal)}
+.portal-main{padding:44px}
+.portal-header{margin-bottom:36px}
+.portal-header h1{font-family:var(--fd);font-size:36px;font-weight:400;color:var(--text)}
+.portal-header h1 em{font-style:italic;color:var(--teal)}
+.portal-header p{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.8}
+.portal-section{display:none}.portal-section.active{display:block}
+.submit-box{background:#fff;border:1px solid var(--border);padding:40px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.fg{display:flex;flex-direction:column;gap:7px}
+.fg label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.fg input,.fg select,.fg textarea{border:1px solid var(--border);padding:12px 16px;font-family:var(--fs);font-size:12px;color:var(--text);outline:none;transition:border-color .2s;background:#fff;-webkit-appearance:none}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted2)}
+.file-drop{border:2px dashed var(--border);padding:36px;text-align:center;transition:all .2s;position:relative;margin-bottom:0}
+.file-drop:hover,.file-drop.over{border-color:var(--teal);background:var(--teal-pale)}
+.file-drop input{position:absolute;inset:0;opacity:0;width:100%;height:100%}
+.file-drop-icon{font-size:28px;display:block;margin-bottom:10px}
+.file-drop-text{font-size:12px;color:var(--muted);line-height:1.8}
+.file-drop-text strong{color:var(--teal);font-weight:400}
+.file-list{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.file-item{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:var(--bg2);border:1px solid var(--border);font-size:11px}
+.file-item-name{color:var(--text)}
+.file-item-rm{background:none;border:none;color:var(--muted);font-size:15px;transition:color .2s;line-height:1}
+.file-item-rm:hover{color:#c0392b}
+.upload-progress{display:none;margin-top:14px}
+.progress-bar-wrap{background:var(--border);height:4px;width:100%}
+.progress-bar{background:var(--teal);height:4px;width:0%;transition:width .3s}
+.progress-text{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:6px}
+.submit-btn{background:var(--teal);color:#fff;border:none;padding:14px 44px;font-family:var(--fs);font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-top:24px;transition:opacity .2s}
+.submit-btn:hover{opacity:.85}
+.submit-btn:disabled{opacity:.4}
+.submit-ok{display:none;margin-top:18px;padding:18px 22px;background:var(--teal-pale);border-left:3px solid var(--teal);font-size:12px;color:var(--teal-dark);line-height:1.8}
+.rpt-filters{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.fb{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border:1px solid var(--border);background:#fff;color:var(--muted);transition:all .2s}
+.fb:hover{border-color:var(--teal);color:var(--teal)}
+.fb.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.rpt-grid{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.rpt-item{background:#fff;padding:22px 26px;transition:background .2s}
+.rpt-item:hover{background:var(--teal-pale)}
+.rpt-dept{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--teal-light);display:block;margin-bottom:5px}
+.rpt-title{font-family:var(--fd);font-size:18px;font-weight:400;color:var(--text)}
+.rpt-meta{font-size:10px;color:var(--muted);margin-top:3px;display:block}
+.rpt-files{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.rpt-file-link{font-size:10px;color:var(--teal);text-decoration:none;padding:4px 10px;border:1px solid var(--teal-pale);transition:background .2s}
+.rpt-file-link:hover{background:var(--teal-pale)}
+.rpt-empty{padding:60px;text-align:center;color:var(--muted);font-size:13px;background:#fff}
+.loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@keyframes pgIn{from{opacity:0}to{opacity:1}}
+@keyframes splashIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+@media(max-width:860px){
+  .snav{padding:18px 24px}.nav-links{display:none}.nav-hamburger{display:flex}.mobile-menu{display:flex}
+  .hero,.about,.wws,.services,.insights,.contact{padding-left:24px;padding-right:24px}
+  .hero{padding-top:80px;padding-bottom:60px}
+  .about,.contact{grid-template-columns:1fr;gap:40px}
+  .g3,.wws-grid,.ins-grid{grid-template-columns:1fr}
+  .sfoot{grid-template-columns:1fr;text-align:center;padding:28px 24px}.ft-links{justify-content:center}
+  .svc-hdr{flex-direction:column;gap:20px}
+  .portal-body{grid-template-columns:1fr}.portal-sidebar{display:none}.portal-main{padding:24px}
+  .frow{grid-template-columns:1fr}
+  #corner-logo{top:14px;right:14px;width:40px;height:40px}#corner-logo svg{width:28px;height:28px}
+  .login-box{padding:40px 28px}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="corner-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="50" y="68" font-family="Georgia,serif" font-size="44" font-style="italic" fill="white" text-anchor="middle">K&amp;L</text></svg></div>
+<div id="overlay"><div id="overlay-inner"></div></div>
+
+<div id="splash">
+  <div id="splash-inner">
+    <div id="splash-logo">
+      <div id="splash-k">L</div><div id="splash-div"></div><div id="splash-l">R</div>
+    </div>
+    <div id="splash-name">Lam Richter Corp.</div>
+    <div id="splash-tag">Real Estate Investment &amp; Advisory</div>
+  </div>
+</div>
+
+<!-- MAIN SITE -->
+<div class="page active" id="pg-main">
+  <nav class="snav" id="nav-main">
+    <div><span class="nav-logo-main">Lam Richter Corp.</span><span class="nav-logo-sub">Real Estate Investment &amp; Advisory</span></div>
+    <ul class="nav-links">
+      <li><a href="#l-about">About</a></li>
+      <li><a href="#l-serve">Who We Serve</a></li>
+      <li><a href="#l-leadership">Leadership</a></li>
+      <li><a href="#l-insights">Insights</a></li>
+      <li><a href="#l-contact">Contact</a></li>
+      <li><button class="nav-pill" id="b-to-login">Staff Login</button></li>
+    </ul>
+    <button class="nav-hamburger" id="ham-main"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="mobile-menu" id="mob-main">
+    <a href="#l-about" class="mob-close">About</a>
+    <a href="#l-serve" class="mob-close">Who We Serve</a>
+    <a href="#l-leadership" class="mob-close">Leadership</a>
+    <a href="#l-insights" class="mob-close">Insights</a>
+    <a href="#l-contact" class="mob-close">Contact</a>
+    <button class="mob-link mob-small" id="b-mob-login">Staff Login</button>
+  </div>
+
+  <section class="hero">
+    <div class="hgl-v"></div><div class="hgl-h"></div>
+    <div class="hero-letter">LR</div>
+    <p class="hero-ey">Acquire &middot; Develop &middot; Optimize</p>
+    <h1 class="hero-title">Real estate with<br/><em>institutional edge.</em></h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Lam Richter Corp. is a full-service real estate investment and advisory firm — delivering institutional-grade acquisition, asset management, and development strategy across residential, commercial, and mixed-use markets.</p>
+    <div class="hero-btns">
+      <a href="#l-leadership" class="btn-s">Meet Leadership</a>
+      <a href="#l-contact" class="btn-g">Get in Touch</a>
+    </div>
+  </section>
+
+  <div class="mq">
+    <div class="mq-track">
+      <span>Acquisitions</span><span class="dot">&#9670;</span><span>Asset Management</span><span class="dot">&#9670;</span><span>Development</span><span class="dot">&#9670;</span><span>Mixed-Use</span><span class="dot">&#9670;</span><span>Commercial RE</span><span class="dot">&#9670;</span><span>Residential</span><span class="dot">&#9670;</span><span>Due Diligence</span><span class="dot">&#9670;</span><span>Capital Markets</span><span class="dot">&#9670;</span>
+      <span>Acquisitions</span><span class="dot">&#9670;</span><span>Asset Management</span><span class="dot">&#9670;</span><span>Development</span><span class="dot">&#9670;</span><span>Mixed-Use</span><span class="dot">&#9670;</span><span>Commercial RE</span><span class="dot">&#9670;</span><span>Residential</span><span class="dot">&#9670;</span><span>Due Diligence</span><span class="dot">&#9670;</span><span>Capital Markets</span><span class="dot">&#9670;</span>
+    </div>
+  </div>
+
+  <div class="about" id="l-about">
+    <div class="reveal">
+      <span class="sec-lbl">// About Lam Richter</span>
+      <h2 class="sec-title">Real estate that<br/><em>performs.</em></h2>
+      <p class="about-body">Lam Richter Corp. was founded to bring institutional discipline to real estate investment. We identify, acquire, and actively manage properties across residential, commercial, and mixed-use asset classes — combining rigorous underwriting with hands-on asset management to generate durable returns.</p>
+    </div>
+    <div class="about-cards reveal">
+      <div class="ac"><span class="ac-lbl">Our Strength</span><div class="ac-title">Acquisition Discipline</div><p class="ac-desc">We source, underwrite, and close transactions with institutional precision — rigorous due diligence, disciplined pricing, and relentless deal focus.</p></div>
+      <div class="ac"><span class="ac-lbl">Our Reach</span><div class="ac-title">Multi-Market Presence</div><p class="ac-desc">Active across 18 metropolitan markets, Lam Richter identifies opportunities before they become consensus.</p></div>
+      <div class="ac"><span class="ac-lbl">Our Edge</span><div class="ac-title">Active Management</div><p class="ac-desc">We don't just buy and hold — we actively manage every asset to maximize NOI, occupancy, and long-term appreciation.</p></div>
+    </div>
+  </div>
+
+  <section class="wws" id="l-serve">
+    <div class="reveal"><span class="sec-lbl">// Who We Serve</span><h2 class="sec-title">Built for serious<br/><em>real estate investors.</em></h2></div>
+    <div class="wws-grid">
+      <div class="wws-card reveal"><div class="wws-icon">I.</div><div class="wws-title">Private Wealth &amp; Family Offices</div><p class="wws-desc">High-net-worth individuals and family offices seeking direct real estate exposure across residential and commercial classes.</p><div class="wws-tags"><span class="wws-tag">Direct Ownership</span><span class="wws-tag">Portfolio Strategy</span><span class="wws-tag">Tax Efficiency</span></div></div>
+      <div class="wws-card reveal"><div class="wws-icon">II.</div><div class="wws-title">Institutional Investors</div><p class="wws-desc">Pension funds, endowments, and sovereign wealth vehicles seeking real estate allocations with institutional-grade governance.</p><div class="wws-tags"><span class="wws-tag">Core &amp; Core-Plus</span><span class="wws-tag">Value-Add</span><span class="wws-tag">Opportunistic</span></div></div>
+      <div class="wws-card reveal"><div class="wws-icon">III.</div><div class="wws-title">Developers &amp; Operators</div><p class="wws-desc">Ground-up developers seeking capital, co-investment, or advisory support on mixed-use, multifamily, and commercial projects.</p><div class="wws-tags"><span class="wws-tag">Ground-Up Dev</span><span class="wws-tag">Mixed-Use</span><span class="wws-tag">Co-Investment</span></div></div>
+    </div>
+  </section>
+
+  <section class="services" id="l-leadership">
+    <div class="svc-hdr reveal">
+      <div><span class="sec-lbl">// Leadership</span><h2 class="sec-title">The people behind<br/><em>the numbers.</em></h2></div>
+      <p class="svc-intro">Our leadership brings decades of institutional experience across real estate acquisitions, capital markets, and asset management.</p>
+    </div>
+    <div class="svc-grid g3">
+      <div class="svc-card reveal" style="padding:44px 40px">
+        <div class="svc-num" style="font-size:36px">CEO</div>
+        <h3 class="svc-title">Robert Lam</h3>
+        <p class="svc-desc">CEO &amp; Co-founder of Lam Richter Corp. Robert leads the firm's strategic direction, capital deployment, and institutional partnerships across 18 active markets.</p>
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)"><span class="ct-lbl">Email</span><span style="font-size:13px;color:var(--text);display:block;margin-top:4px">rob [at] lamrichter.com</span></div>
+        <span class="svc-arr">&#8594;</span>
+      </div>
+      <div class="svc-card reveal" style="padding:44px 40px">
+        <div class="svc-num" style="font-size:36px">Acq.</div>
+        <h3 class="svc-title">Jonathan Mizrahi</h3>
+        <p class="svc-desc">Head of Acquisitions at Lam Richter Corp. Jonathan drives deal sourcing, underwriting, and transaction execution across the firm's target markets.</p>
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)"><span class="ct-lbl">Email</span><span style="font-size:13px;color:var(--text);display:block;margin-top:4px">jon.mizrahi [at] lamrichter.com</span></div>
+        <span class="svc-arr">&#8594;</span>
+      </div>
+      <div class="svc-card reveal" style="padding:44px 40px">
+        <div class="svc-num" style="font-size:36px">Web</div>
+        <h3 class="svc-title">Tawhid Kabir</h3>
+        <p class="svc-desc">Director of Web Development at Lam Richter Corp. Tawhid leads the firm's digital infrastructure, web presence, and technology strategy.</p>
+        <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border)"><span class="ct-lbl">Email</span><span style="font-size:13px;color:var(--text);display:block;margin-top:4px">tawhid.kabir [at] lamrichter.com</span></div>
+        <span class="svc-arr">&#8594;</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="insights" id="l-insights">
+    <div class="reveal"><span class="sec-lbl">// From Our Desk</span><h2 class="sec-title">Market perspectives<br/><em>worth reading.</em></h2></div>
+    <div class="ins-grid">
+      <div class="ins-card reveal"><span class="ins-date">March 2025</span><div class="ins-title">Multifamily in 2025: Where the Opportunity Actually Lives</div><p class="ins-excerpt">Consensus is crowded into gateway cities. We examine the secondary markets where cap rate compression hasn't yet erased the risk premium.</p><a href="#l-contact" class="ins-read">Request Full Report &#8594;</a></div>
+      <div class="ins-card reveal"><span class="ins-date">February 2025</span><div class="ins-title">The Case for Mixed-Use: Retail Isn't Dead, It's Selective</div><p class="ins-excerpt">Retail real estate has been mispriced by fear. We argue that well-located, experiential mixed-use assets represent compelling risk-adjusted opportunities.</p><a href="#l-contact" class="ins-read">Request Full Report &#8594;</a></div>
+      <div class="ins-card reveal"><span class="ins-date">January 2025</span><div class="ins-title">Rate Normalization and Real Estate: A Reunderwriting</div><p class="ins-excerpt">With the rate environment stabilizing, deals underwritten at peak leverage are being stress-tested. We examine what holds up and where distressed opportunity is emerging.</p><a href="#l-contact" class="ins-read">Request Full Report &#8594;</a></div>
+    </div>
+  </section>
+
+  <section class="contact" id="l-contact">
+    <div class="reveal">
+      <span class="sec-lbl">// Get in Touch</span>
+      <h2 class="sec-title">Let's talk<br/><em>real estate.</em></h2>
+      <p class="ct-body">For acquisitions, co-investment opportunities, or asset management mandates, please reach out directly to Jonathan Mizrahi, our Head of Acquisitions.</p>
+      <div class="ct-info">
+        <div class="ct-person"><span class="ct-lbl">CEO &amp; Co-founder</span><span class="ct-val">Robert Lam</span><span class="ct-sub">rob [at] lamrichter.com</span></div>
+        <div class="ct-person"><span class="ct-lbl">Head of Acquisitions</span><span class="ct-val">Jonathan Mizrahi</span><span class="ct-sub">jon.mizrahi [at] lamrichter.com</span></div>
+        <div class="ct-person"><span class="ct-lbl">Director of Web Development</span><span class="ct-val">Tawhid Kabir</span><span class="ct-sub">tawhid.kabir [at] lamrichter.com</span></div>
+        <div class="ct-person"><span class="ct-lbl">Office</span><span class="ct-val" style="font-size:14px">730 3rd Avenue, 4th Floor<br/>New York, NY 10017</span></div>
+      </div>
+      <div class="ct-reach"><p>For all acquisition inquiries, please reach out directly to <strong>Jonathan Mizrahi</strong> at jon.mizrahi [at] lamrichter.com. Jonathan leads our acquisitions team and responds within one business day.</p></div>
+    </div>
+    <div class="reveal" style="display:flex;flex-direction:column;justify-content:center">
+      <span class="sec-lbl">// Our Location</span>
+      <h3 style="font-family:var(--fd);font-size:clamp(28px,4vw,52px);font-weight:400;color:var(--text);line-height:1.2;margin-bottom:24px">730 3rd Avenue<br/><em style="color:var(--teal)">New York.</em></h3>
+      <p style="font-size:12px;line-height:2;color:var(--muted)">4th Floor &middot; New York, NY 10017</p>
+      <div style="margin-top:36px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;gap:14px"><div style="width:36px;height:1px;background:var(--teal)"></div><span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)">Midtown Manhattan</span></div>
+        <div style="display:flex;align-items:center;gap:14px"><div style="width:36px;height:1px;background:var(--teal)"></div><span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)">Near Grand Central Terminal</span></div>
+        <div style="display:flex;align-items:center;gap:14px"><div style="width:36px;height:1px;background:var(--teal)"></div><span style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)">18 Active Real Estate Markets</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="sfoot">
+    <div><span class="ft-name">Lam Richter Corp.</span><span class="ft-tag">Real Estate Investment &amp; Advisory</span></div>
+    <p class="ft-copy">&#169; 2025 &middot; All Rights Reserved<br/>Real estate advisory services subject to regulatory oversight.</p>
+    <div class="ft-links"><a href="#">Privacy Policy</a><a href="#">Disclosures</a><a href="#" id="b-foot-login">Staff Login &#8594;</a></div>
+  </footer>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="page" id="pg-login">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--teal-dark);position:relative;overflow:hidden">
+    <div class="login-bg">LR</div>
+    <div class="login-box">
+      <span class="login-logo">Lam Richter Corp.</span>
+      <span class="login-sub">Staff Portal &middot; Secure Access</span>
+      <div class="login-toggle">
+        <button class="active" id="tab-signin">Sign In</button>
+        <button id="tab-register">Create Account</button>
+      </div>
+
+      <!-- SIGN IN FORM -->
+      <div id="form-signin">
+        <h2 class="login-title">Welcome<br/><em>back.</em></h2>
+        <div class="login-field"><label>Email</label><input type="email" id="si-email" placeholder="you@lamrichter.com"/></div>
+        <div class="login-field"><label>Password</label><input type="password" id="si-pass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"/></div>
+        <button class="login-btn" id="btn-signin">Sign In</button>
+        <div class="login-err" id="si-err"></div>
+        <div class="login-hint"><a href="#" id="btn-forgot">Forgot your password?</a></div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="form-register" style="display:none">
+        <h2 class="login-title">Create your<br/><em>account.</em></h2>
+        <div class="login-field"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your full name"/></div>
+        <div class="login-field"><label>Email</label><input type="email" id="reg-email" placeholder="you@lamrichter.com"/></div>
+        <div class="login-field"><label>Password</label><input type="password" id="reg-pass" placeholder="Min. 8 characters"/></div>
+        <div class="login-field"><label>Confirm Password</label><input type="password" id="reg-pass2" placeholder="Repeat password"/></div>
+        <button class="login-btn" id="btn-register">Create Account</button>
+        <div class="login-err" id="reg-err"></div>
+        <div class="login-ok" id="reg-ok"></div>
+        <div class="login-hint">Only @lamrichter.com email addresses are permitted.</div>
+      </div>
+
+      <button class="login-back" id="b-back-to-site">&#8592; Back to Site</button>
+    </div>
+  </div>
+</div>
+
+<!-- PORTAL PAGE -->
+<div class="page" id="pg-portal">
+  <nav class="portal-nav">
+    <span class="portal-nav-logo">Lam Richter Corp. &middot; Staff Portal</span>
+    <div style="display:flex;align-items:center">
+      <span class="portal-user" id="portal-username"></span>
+      <button class="portal-logout" id="btn-logout">Sign Out</button>
+    </div>
+  </nav>
+  <div class="portal-body">
+    <div class="portal-sidebar">
+      <span class="portal-sidebar-title">Portal</span>
+      <button class="pni active" data-sec="submit">Submit Report</button>
+      <button class="pni" data-sec="reports">All Reports</button>
+      <span class="portal-sidebar-title">Filter by Department</span>
+      <button class="pni dept-btn" data-dept="all">All Departments</button>
+      <button class="pni dept-btn" data-dept="estate">Estate Management</button>
+      <button class="pni dept-btn" data-dept="finance">Finance</button>
+      <button class="pni dept-btn" data-dept="hr">Human Resources</button>
+      <button class="pni dept-btn" data-dept="it">IT</button>
+      <button class="pni dept-btn" data-dept="legal">Legal</button>
+      <button class="pni dept-btn" data-dept="regulatory">Regulatory</button>
+    </div>
+    <div class="portal-main">
+
+      <!-- SUBMIT -->
+      <div class="portal-section active" id="section-submit">
+        <div class="portal-header"><h1>Submit a <em>Report</em></h1><p>Upload reports and documents to the appropriate department. All staff can view submitted reports.</p></div>
+        <div class="submit-box">
+          <div class="frow">
+            <div class="fg"><label>Report Title</label><input type="text" id="rpt-title" placeholder="e.g. Q1 2025 Profit Projection"/></div>
+            <div class="fg"><label>Department</label>
+              <select id="rpt-dept">
+                <option value="" disabled selected>Select department</option>
+                <option value="estate">Estate Management Department</option>
+                <option value="finance">Finance Department</option>
+                <option value="hr">Human Resources Department</option>
+                <option value="it">IT Department</option>
+                <option value="legal">Legal Department</option>
+                <option value="regulatory">Regulatory Department</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom:18px"><label>Description (optional)</label><textarea id="rpt-desc" rows="3" placeholder="Brief summary of this report..."></textarea></div>
+          <div class="fg" style="margin-bottom:10px"><label>Attach Files</label></div>
+          <div class="file-drop" id="file-drop">
+            <input type="file" id="file-input" multiple/>
+            <span class="file-drop-icon">&#128196;</span>
+            <div class="file-drop-text"><strong>Click to browse</strong> or drag &amp; drop<br/>All file types accepted &middot; Word, Excel, PowerPoint, PDF and more</div>
+          </div>
+          <div class="file-list" id="file-list"></div>
+          <div class="upload-progress" id="upload-progress">
+            <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+            <div class="progress-text" id="progress-text">Uploading...</div>
+          </div>
+          <button class="submit-btn" id="btn-submit-rpt">Submit Report</button>
+          <div class="submit-ok" id="submit-ok">&#10003; &nbsp; Report submitted successfully and is now visible to all staff in the All Reports section.</div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="portal-section" id="section-reports">
+        <div class="portal-header"><h1>All <em>Reports</em></h1><p>All submitted reports. Filter by department using the buttons below or the sidebar.</p></div>
+        <div class="rpt-filters">
+          <button class="fb active" data-filter="all">All</button>
+          <button class="fb" data-filter="estate">Estate Management</button>
+          <button class="fb" data-filter="finance">Finance</button>
+          <button class="fb" data-filter="hr">Human Resources</button>
+          <button class="fb" data-filter="it">IT</button>
+          <button class="fb" data-filter="legal">Legal</button>
+          <button class="fb" data-filter="regulatory">Regulatory</button>
+        </div>
+        <div class="rpt-grid" id="rpt-grid"><div class="rpt-empty"><span class="loading-spinner"></span> Loading reports...</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE SDKs (compat version - works on all hosting) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAs7jD8UqkGjkmCxe0mze1_CCH86OUQyfs",
+  authDomain: "lam-richter-portal.firebaseapp.com",
+  projectId: "lam-richter-portal",
+  storageBucket: "lam-richter-portal.firebasestorage.app",
+  messagingSenderId: "568935897589",
+  appId: "1:568935897589:web:55e57e333ec6fd89dd28bc"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+const stor = firebase.storage();
+
+const DEPT_LABELS = {
+  estate:'Estate Management Department', finance:'Finance Department',
+  hr:'Human Resources Department', it:'IT Department',
+  legal:'Legal Department', regulatory:'Regulatory Department'
+};
+
+// ── CURSOR ──
+const dot = document.getElementById('cur'), ring = document.getElementById('cur-ring');
+let mx=-100,my=-100,rx=-100,ry=-100;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.addEventListener('mouseover',e=>{
+  const h=e.target.closest('a,button,input,textarea,select,.svc-card,.ac,.wws-card,.ins-card,.rpt-item,.file-drop');
+  dot.style.width=h?'18px':'10px';dot.style.height=h?'18px':'10px';ring.style.opacity=h?'0.7':'0.4';
+});
+
+// ── SPLASH ──
+setTimeout(()=>{const s=document.getElementById('splash');s.classList.add('gone');setTimeout(()=>s.style.display='none',700);},2200);
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav-main').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// ── PAGE SWITCH ──
+const ol=document.getElementById('overlay'),oli=document.getElementById('overlay-inner');
+function goTo(id,label){
+  ol.style.background='#0a5c6e';oli.textContent=label;ol.className='show';
+  setTimeout(()=>{
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active','fade-in'));
+    const pg=document.getElementById(id);pg.classList.add('active');window.scrollTo(0,0);
+    ol.className='hide';setTimeout(()=>{ol.className='';reveals();},600);
+    setTimeout(()=>pg.classList.add('fade-in'),50);
+  },500);
+}
+
+function wire(id,fn){const el=document.getElementById(id);if(el)el.addEventListener('click',fn);}
+wire('b-to-login',()=>goTo('pg-login','Staff Portal'));
+wire('b-mob-login',()=>{closeMob();goTo('pg-login','Staff Portal');});
+wire('b-foot-login',e=>{e.preventDefault();goTo('pg-login','Staff Portal');});
+wire('b-back-to-site',()=>goTo('pg-main','Lam Richter Corp.'));
+wire('btn-logout',()=>auth.signOut().then(()=>goTo('pg-main','Lam Richter Corp.')));
+
+// ── MOBILE MENU ──
+function closeMob(){document.getElementById('ham-main').classList.remove('open');document.getElementById('mob-main').classList.remove('open');}
+wire('ham-main',()=>{document.getElementById('ham-main').classList.toggle('open');document.getElementById('mob-main').classList.toggle('open');});
+document.querySelectorAll('.mob-close').forEach(a=>a.addEventListener('click',closeMob));
+
+// ── REVEALS ──
+function reveals(){
+  const obs=new IntersectionObserver((entries)=>{entries.forEach((en,i)=>{if(en.isIntersecting){setTimeout(()=>en.target.classList.add('in'),i*80);obs.unobserve(en.target);}});},{threshold:.08});
+  document.querySelectorAll('.page.active .reveal:not(.in)').forEach(el=>obs.observe(el));
+}
+reveals();
+
+// ── LOGIN TABS ──
+const tabSI=document.getElementById('tab-signin'),tabReg=document.getElementById('tab-register');
+const formSI=document.getElementById('form-signin'),formReg=document.getElementById('form-register');
+tabSI.addEventListener('click',()=>{tabSI.classList.add('active');tabReg.classList.remove('active');formSI.style.display='';formReg.style.display='none';});
+tabReg.addEventListener('click',()=>{tabReg.classList.add('active');tabSI.classList.remove('active');formReg.style.display='';formSI.style.display='none';});
+
+// ── SIGN IN ──
+wire('btn-signin',async()=>{
+  const email=document.getElementById('si-email').value.trim();
+  const pass=document.getElementById('si-pass').value;
+  const err=document.getElementById('si-err');
+  err.style.display='none';
+  try{
+    await auth.signInWithEmailAndPassword(email,pass);
+  }catch(e){
+    err.textContent=e.code==='auth/invalid-credential'?'Incorrect email or password.':e.message;
+    err.style.display='block';
+  }
+});
+['si-email','si-pass'].forEach(id=>{document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('btn-signin').click();});});
+
+// ── REGISTER ──
+wire('btn-register',async()=>{
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const pass2=document.getElementById('reg-pass2').value;
+  const err=document.getElementById('reg-err');
+  const ok=document.getElementById('reg-ok');
+  err.style.display='none';ok.style.display='none';
+  if(!email.endsWith('@lamrichter.com')){err.textContent='Only @lamrichter.com email addresses are permitted.';err.style.display='block';return;}
+  if(pass!==pass2){err.textContent='Passwords do not match.';err.style.display='block';return;}
+  if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.style.display='block';return;}
+  try{
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    await cred.user.updateProfile({displayName:name});
+    ok.textContent='Account created! Signing you in...';ok.style.display='block';
+  }catch(e){
+    err.textContent=e.code==='auth/email-already-in-use'?'An account with this email already exists.':e.message;
+    err.style.display='block';
+  }
+});
+
+// ── FORGOT PASSWORD ──
+wire('btn-forgot',async e=>{
+  e.preventDefault();
+  const email=document.getElementById('si-email').value.trim();
+  const err=document.getElementById('si-err');
+  if(!email){err.textContent='Enter your email address above first.';err.style.display='block';return;}
+  try{
+    await auth.sendPasswordResetEmail(email);
+    err.style.display='none';
+    const ok=document.createElement('div');ok.className='login-ok';ok.style.display='block';ok.textContent='Password reset email sent. Check your inbox.';
+    document.getElementById('btn-forgot').parentElement.after(ok);
+  }catch(e){err.textContent=e.message;err.style.display='block';}
+});
+
+// ── AUTH STATE ──
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById('portal-username').textContent=user.displayName||user.email;
+    if(document.getElementById('pg-login').classList.contains('active')){
+      goTo('pg-portal','Staff Portal');
+      loadReports();
+    }
+  }
+});
+
+// ── PORTAL NAV ──
+document.querySelectorAll('.pni[data-sec]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.pni[data-sec]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.portal-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('section-'+btn.dataset.sec).classList.add('active');
+    if(btn.dataset.sec==='reports') loadReports();
+  });
+});
+document.querySelectorAll('.dept-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.pni[data-sec]').forEach(b=>b.classList.remove('active'));
+    document.querySelector('[data-sec="reports"]').classList.add('active');
+    document.querySelectorAll('.portal-section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('section-reports').classList.add('active');
+    setFilter(btn.dataset.dept);
+    loadReports(btn.dataset.dept);
+  });
+});
+
+// ── FILE HANDLING ──
+let selectedFiles=[];
+const fileInput=document.getElementById('file-input');
+const fileDrop=document.getElementById('file-drop');
+const fileListEl=document.getElementById('file-list');
+
+function renderFiles(){
+  fileListEl.innerHTML='';
+  selectedFiles.forEach((f,i)=>{
+    const item=document.createElement('div');item.className='file-item';
+    item.innerHTML=`<span class="file-item-name">&#128196; ${f.name} <span style="color:var(--muted2);font-size:9px">(${fmtSize(f.size)})</span></span><button class="file-item-rm" data-i="${i}">&#10005;</button>`;
+    fileListEl.appendChild(item);
+  });
+  fileListEl.querySelectorAll('.file-item-rm').forEach(btn=>{btn.addEventListener('click',()=>{selectedFiles.splice(parseInt(btn.dataset.i),1);renderFiles();});});
+}
+function fmtSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB';}
+fileInput.addEventListener('change',()=>{Array.from(fileInput.files).forEach(f=>selectedFiles.push(f));renderFiles();fileInput.value='';});
+fileDrop.addEventListener('dragover',e=>{e.preventDefault();fileDrop.classList.add('over');});
+fileDrop.addEventListener('dragleave',()=>fileDrop.classList.remove('over'));
+fileDrop.addEventListener('drop',e=>{e.preventDefault();fileDrop.classList.remove('over');Array.from(e.dataTransfer.files).forEach(f=>selectedFiles.push(f));renderFiles();});
+
+// ── SUBMIT REPORT ──
+wire('btn-submit-rpt',async()=>{
+  const title=document.getElementById('rpt-title').value.trim();
+  const dept=document.getElementById('rpt-dept').value;
+  const desc=document.getElementById('rpt-desc').value.trim();
+  const ok=document.getElementById('submit-ok');
+  const btn=document.getElementById('btn-submit-rpt');
+  const prog=document.getElementById('upload-progress');
+  const bar=document.getElementById('progress-bar');
+  const progText=document.getElementById('progress-text');
+  if(!title||!dept){alert('Please enter a title and select a department.');return;}
+  const user=auth.currentUser;
+  if(!user){alert('You must be signed in.');return;}
+  btn.disabled=true;ok.style.display='none';
+
+  try{
+    // Upload files to Firebase Storage
+    const fileURLs=[];
+    if(selectedFiles.length>0){
+      prog.style.display='block';
+      for(let i=0;i<selectedFiles.length;i++){
+        const f=selectedFiles[i];
+        progText.textContent=`Uploading ${f.name} (${i+1} of ${selectedFiles.length})...`;
+        const storRef=stor.ref(`reports/${Date.now()}_${f.name}`);
+        await new Promise((resolve,reject)=>{
+          const task=storRef.put(f);
+          task.on('state_changed',snap=>{
+            const pct=Math.round(snap.bytesTransferred/snap.totalBytes*100);
+            bar.style.width=pct+'%';
+          },reject,async()=>{
+            const url=await task.snapshot.ref.getDownloadURL();
+            fileURLs.push({name:f.name,url,size:f.size});
+            resolve();
+          });
+        });
+      }
+      prog.style.display='none';bar.style.width='0%';
+    }
+
+    // Save to Firestore
+    await db.collection('reports').add({
+      title,dept,desc,
+      submittedBy:user.displayName||user.email,
+      submittedByEmail:user.email,
+      files:fileURLs,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Reset
+    document.getElementById('rpt-title').value='';
+    document.getElementById('rpt-dept').value='';
+    document.getElementById('rpt-desc').value='';
+    selectedFiles=[];renderFiles();
+    ok.style.display='block';
+    setTimeout(()=>ok.style.display='none',6000);
+  }catch(e){
+    alert('Error submitting report: '+e.message);
+    prog.style.display='none';
+  }
+  btn.disabled=false;
+});
+
+// ── LOAD & RENDER REPORTS ──
+let currentFilter='all';
+function setFilter(f){
+  currentFilter=f;
+  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('active',b.dataset.filter===f));
+}
+document.querySelectorAll('.fb').forEach(btn=>btn.addEventListener('click',()=>{setFilter(btn.dataset.filter);loadReports(btn.dataset.filter);}));
+
+async function loadReports(filter){
+  filter=filter||currentFilter;
+  const grid=document.getElementById('rpt-grid');
+  grid.innerHTML='<div class="rpt-empty"><span class="loading-spinner"></span> Loading...</div>';
+  try{
+    const q=db.collection('reports').orderBy('createdAt','desc');
+    const snap=await q.get();
+    let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(filter&&filter!=='all') docs=docs.filter(r=>r.dept===filter);
+    if(docs.length===0){grid.innerHTML='<div class="rpt-empty">No reports found'+(filter!=='all'?' in this department':'')+'.</div>';return;}
+    grid.innerHTML='';
+    docs.forEach(r=>{
+      const date=r.createdAt?.toDate?.()?.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})||'Just now';
+      const filesHtml=r.files&&r.files.length>0
+        ?r.files.map(f=>`<a class="rpt-file-link" href="${f.url}" target="_blank" rel="noopener">&#128196; ${f.name}</a>`).join('')
+        :'<span style="font-size:10px;color:var(--muted2)">No files attached</span>';
+      const item=document.createElement('div');item.className='rpt-item';
+      item.innerHTML=`<span class="rpt-dept">${DEPT_LABELS[r.dept]||r.dept}</span><div class="rpt-title">${r.title}</div><span class="rpt-meta">Submitted by ${r.submittedBy} &middot; ${date}</span>${r.desc?`<div style="font-size:11px;color:var(--muted);margin-top:6px;font-style:italic">${r.desc}</div>`:''}<div class="rpt-files" style="margin-top:12px">${filesHtml}</div>`;
+      grid.appendChild(item);
+    });
+  }catch(e){
+    grid.innerHTML=`<div class="rpt-empty">Error loading reports: ${e.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
