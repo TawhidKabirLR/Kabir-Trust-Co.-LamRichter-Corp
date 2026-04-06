@@ -651,6 +651,7 @@ tabReg.addEventListener('click', function() {
 
 // SIGN IN
 wire('btn-signin', function() {
+    console.log("clicked"); 
   var email = document.getElementById('si-email').value.trim();
   var pass  = document.getElementById('si-pass').value;
   var err   = document.getElementById('si-err');
@@ -843,7 +844,6 @@ function loadReports(filter) {
   }).catch(function(e){ grid.innerHTML='<div class="rpt-empty">Error: '+e.message+'</div>'; });
 }
 
-}, 500);
 </script>
 </body>
 </html>
