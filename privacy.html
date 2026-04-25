@@ -105,19 +105,19 @@ body{background:var(--bg);color:var(--text);font-family:var(--fs);font-weight:30
 @keyframes splashIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* ENTRY SPLASH */
-#pp-splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow-y:auto;transition:opacity .65s ease}
+#pp-splash{position:fixed;inset:0;z-index:99999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:opacity .65s ease}
 #pp-splash.gone{opacity:0;pointer-events:none}
 #pp-emblem{width:min(220px,34vw);height:auto;overflow:visible;display:block}
 .lp-leaf{opacity:0;transform-box:fill-box;transform-origin:center;animation:lpLeafIn .32s ease-out forwards}
 #lp-vine{opacity:0;animation:lpFadeIn .4s ease-out .0s forwards}
 #lp-sword-pommel-top,#lp-sword-pommel-ball{opacity:0;animation:lpFadeIn .3s ease-out .48s forwards}
 #lp-sword-guard{opacity:0;animation:lpFadeIn .3s ease-out .56s forwards}
-#lp-sword-grip{opacity:0;transform-box:fill-box;transform-origin:50% 0%;transform:scaleY(0);animation:lpGrowY .45s ease-out .58s forwards}
-#lp-sword-blade{opacity:0;transform-box:fill-box;transform-origin:50% 0%;transform:scaleY(0);animation:lpGrowY .75s cubic-bezier(.15,.9,.35,1.05) .65s forwards}
+#lp-sword-grip{stroke-dasharray:37;stroke-dashoffset:37;opacity:0;animation:lpDashIn .45s ease-out .58s forwards}
+#lp-sword-blade{stroke-dasharray:234;stroke-dashoffset:234;opacity:0;animation:lpDashIn .75s cubic-bezier(.15,.9,.35,1.05) .65s forwards}
 #lp-sword-tip{opacity:0;animation:lpFadeIn .25s ease-out 1.12s forwards}
 #lp-support{opacity:0;animation:lpFadeIn .2s ease-out 1.05s forwards}
 #lp-pivot{opacity:0;animation:lpFadeIn .2s ease-out 1.12s forwards}
-#lp-beam{opacity:0;transform-box:fill-box;transform-origin:center;transform:scaleX(0);animation:lpGrowX .5s ease-out 1.18s forwards}
+#lp-beam{stroke-dasharray:114;stroke-dashoffset:114;opacity:0;animation:lpDashIn .5s ease-out 1.18s forwards}
 #lp-chains{opacity:0;animation:lpFadeIn .35s ease-out 1.46s forwards}
 #lp-pan-l{opacity:0;transform:translateY(-8px);animation:lpPanDrop .38s ease-out 1.58s forwards}
 #lp-pan-r{opacity:0;transform:translateY(-8px);animation:lpPanDrop .38s ease-out 1.66s forwards}
@@ -127,8 +127,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fs);font-weight:30
 #pp-sub{font-family:'Syncopate',sans-serif;font-size:8px;letter-spacing:5px;text-transform:uppercase;color:#8fa3bc;opacity:0;transform:translateY(6px);animation:lpFadeUp .5s ease-out 2.05s forwards;text-align:center;margin-top:6px}
 @keyframes lpLeafIn{from{opacity:0;transform:scale(.12)}to{opacity:1;transform:scale(1)}}
 @keyframes lpFadeIn{to{opacity:1}}
-@keyframes lpGrowY{to{opacity:1;transform:scaleY(1)}}
-@keyframes lpGrowX{to{opacity:1;transform:scaleX(1)}}
+@keyframes lpDashIn{to{opacity:1;stroke-dashoffset:0}}
 @keyframes lpPanDrop{to{opacity:1;transform:translateY(0)}}
 @keyframes lpFadeUp{to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){
